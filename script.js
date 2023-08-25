@@ -10,12 +10,15 @@ $(function () {
     $("#city-search").click(function () {
         console.log("submitCity");
         addCity();
-        return getWeather();
     });
 });
 
 function addCity() {
-    console.log("addCity");
+    if(!getWeather()) {
+        console.log("addCity failed");
+        alert("City not found");
+        return false;
+    }
     var localCities = JSON.parse(localStorage.getItem("cities"));
     var city = $("#city-input").val();
     if (city != '') {
@@ -33,27 +36,23 @@ function addCity() {
 
 function getWeather() {
     var activeCity = $(".active-city");
-    activeCity.removeClass("active-city"); // remove active class from previous city
+    if(activeCity != null) {
+        activeCity.removeClass("active-city"); // remove active class from previous city
+    }
     console.log("getWeather");
     var city = $("#city-input").val();
 
-    if (city != '') {
-        fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=' + API_KEY).then(function (response) {
-            if(response.ok) {
-                response.json().then(function (data) {
-                    console.log(data);
-                    return true;
-                });
-            }
-            else {
-                $("#error").html("<div class='alert alert-danger' id='errorCity'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>City Not Found</div>");
-                return false;
-            }
-        });
-    } 
-    else {
-        $("#error").html("<div class='alert alert-danger' id='errorCity'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Field cannot be empty</div>");
-        return false;
-    }
-}
+    fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=' + API_KEY).then(function (response) {
+        if(response.ok) {
+            response.json().then(function (data) {
+                console.log(data);
+                return data;
+             });
+        }
+        else {
+            $("#error").html("<div class='alert alert-danger' id='errorCity'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>City Not Found</div>");
+            return response;
+        }
+      });
+} 
 
