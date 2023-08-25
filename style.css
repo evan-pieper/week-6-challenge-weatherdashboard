@@ -1,0 +1,36 @@
+header{
+    background: linear-gradient(#1A2DE0,#360EAB);
+    color: white;
+    text-align: end;
+}
+
+main{
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+a{
+    background-color: grey;
+}
+
+.weather-holder{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#day-forecast{
+    text-align: center;
+    border: 2px solid grey;
+}
+
+#week-forecast{
+    text-align: center;
+    border: 2px solid grey;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.day{
+    border: 2px solid grey;
+}

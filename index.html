@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Weather Dashboard</title>
 </head>
 <body>
@@ -10,18 +11,64 @@
         <h1>Weather Dashboard</h1>
     </header>
 
-    <div class = "city-holder">
-        <h3>Search for a City:</h3>
-        <input type="text" id="city-input" placeholder="City Name">
-        <button id="city-search">Search</button>
-    </div>
+    <main>
+        <div class = "city-holder">
+            <h2>Search for a City:</h3>
+            <input type="text" id="city-input" placeholder="City Name">
+            <button id="city-search">Search</button>
 
-    <div id = "day-forecast">
-        
-    </div>
+            <div id = "search-history">
+                <button>Example City</button>
+            </div>
 
-    <div id = "week-forecast">
-        
-    </div>
+        </div>
+
+        <div class = "weather-holder">
+            <div id = "day-forecast">
+                Day Forecast Goes Here
+            </div>
+
+            <div id = "week-forecast">
+                <h2 id = "FiveHeadline">5-Day Forecast</h2>
+                <div class = "day">
+                    <h3>Day 1</h3>
+                    <p>Icon</p>
+                    <p>Temp</p>
+                    <p>Wind</p>
+                    <p>Humidity</p>
+                </div>
+                <div class = "day">
+                    <h3>Day 2</h3>
+                    <p>Icon</p>
+                    <p>Temp</p>
+                    <p>Wind</p>
+                    <p>Humidity</p>
+                </div>
+                <div class = "day">
+                    <h3>Day 3</h3>
+                    <p>Icon</p>
+                    <p>Temp</p>
+                    <p>Wind</p>
+                    <p>Humidity</p>
+                </div>
+                <div class = "day">
+                    <h3>Day 4</h3>
+                    <p>Icon</p>
+                    <p>Temp</p>
+                    <p>Wind</p>
+                    <p>Humidity</p>
+                </div>
+                <div class = "day">
+                    <h3>Day 5</h3>
+                    <p>Icon</p>
+                    <p>Temp</p>
+                    <p>Wind</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
