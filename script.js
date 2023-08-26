@@ -14,41 +14,44 @@ $("#city-search").click(function () { // when search button is clicked
     addCity(); // run addCity function
 });
 
-function addCity() {
-    console.log("addCity called");
-    var city = $("#city-input").val();
-    console.log("city input: " + city);
-    if (city === "") {
-        console.log("city is empty, add city failed");
-        alert("Please enter a city");
-        return false;
-    }
-    else {
-        if(!getWeather(city)) {
-            console.log("bad getWeather response, add city failed (city not found)");
-            alert("City not found");
-            return false;
+async function addCity() {
+    try {
+        console.log("addCity called");
+        var city = $("#city-input").val();
+        console.log("city input: " + city);
+
+        if (city === "") { // if city is empty
+            console.log("city is empty, add city failed"); // log error
+            alert("Please enter a city"); // alert user
+            return false; // exit function
         }
-        cityWeather = getWeather(city).then(data => {
-            //console.log("cityWeather: " + data);
-            if(!data.ok) {
-                console.log("bad getWeather response, add city failed");
-                alert("City not found");
-                return false;
-            }
-            else {
-                console.log("good cityWeather response, add city succeeded");
-                //var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
-                //localCities.push(city); // add city to array
-                //localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
-                //var searchHistory = $("#search-history"); //city button container element
-                //var cityElement = new $("<button>"); // create new button element
-                //cityElement.addClass("active-city"); // add active class to new button
-                //cityElement.text(city); // set text of new button to city name
-                //cityElement.click(getWeather()); // add click event to new button to get weather
-                //searchHistory.append(cityElement); // add new button to search history (city button container)
-            }
-        });
+        
+        const weatherResponse = await getWeather(city);
+        console.log("weatherResponse: " + weatherResponse);
+        if(!weatherResponse) { // if city not found
+            console.log("bad getWeather response, add city failed (city not found)"); // log error
+            alert("City not found"); // alert user
+            return false; // exit function
+        }
+
+        console.log("no bad weather response detected");
+
+        var cityWeather = getWeather(city); // get weather data for city
+        console.log("cityWeather (getWeather response): " + cityWeather);
+        //console.log("good cityWeather response, add city succeeded");
+
+        //var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+        //localCities.push(city); // add city to array
+        //localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
+        //var searchHistory = $("#search-history"); //city button container element
+        //var cityElement = new $("<button>"); // create new button element
+        //cityElement.addClass("active-city"); // add active class to new button
+        //cityElement.text(city); // set text of new button to city name
+        //cityElement.click(getWeather()); // add click event to new button to get weather
+        //searchHistory.append(cityElement); // add new button to search history (city button container)
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 }
 
