@@ -36,19 +36,21 @@ async function addCity() {
 
         console.log("no bad weather response detected");
 
-        var cityWeather = getWeather(city); // get weather data for city
-        console.log("cityWeather (getWeather response): " + cityWeather);
-        //console.log("good cityWeather response, add city succeeded");
+        var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+        localCities.push(city); // add city to array
+        localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
 
-        //var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
-        //localCities.push(city); // add city to array
-        //localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
-        //var searchHistory = $("#search-history"); //city button container element
-        //var cityElement = new $("<button>"); // create new button element
-        //cityElement.addClass("active-city"); // add active class to new button
-        //cityElement.text(city); // set text of new button to city name
-        //cityElement.click(getWeather()); // add click event to new button to get weather
-        //searchHistory.append(cityElement); // add new button to search history (city button container)
+        var searchHistory = $("#search-history"); //city button container element
+        var cityElement = new $("<button>"); // create new button element
+        updateActiveCity(cityElement) // add active class to new button and remove from other buttons
+        cityElement.text(city); // set text of new button to city name
+        cityElement.aaaaaaa = "aaaaaabbbbbb";
+        cityElement.click( async function () {
+            updateActiveCity(this); // add active class to new button and remove from other buttons
+            var response = await getWeather() // get weather for new city
+        });
+
+        searchHistory.append(cityElement); // add new button to search history (city button container)
     } catch (error) {
         console.log(error);
         return false;
@@ -73,6 +75,17 @@ async function getWeather(query) {
         console.log(error);
         return false;
     }
+}
+
+function updateActiveCity (cityElement) {
+    console.log("updateActiveCity called");
+    var currentActive = $(".active-city"); // get current active button
+    if (currentActive) { // if there is an active button
+        currentActive.removeClass("active-city"); // remove active class from current button
+    }
+    cityElement.addClass("active-city"); // add active class to clicked button
+    console.log("active city updated");
+    console.log(cityElement);
 }
 //getWeather().then(data => {
 //    console.log(data);
