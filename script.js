@@ -60,20 +60,19 @@ async function addCity() {
 async function getWeather(query) {
     try {
         console.log("getWeather called");
-        const url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + query + '&appid=' + API_KEY + '&units=' + units;
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(response.status);
-            return false;
+        const url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + query + '&appid=' + API_KEY + '&units=' + units; // create url
+        const response = await fetch(url); // fetch data from url
+        if (!response.ok) { // if response is not ok
+            throw new Error(response.status); // throw error
         }
-        else {
-            const data = await response.json();
+        else { // if response is ok
+            const data = await response.json(); // get data from response
             console.log("getWeather response: " + data);
-            return data;
+            return data; // return data
         }
-    } catch (error) {
+    } catch (error) { // if error contacting api
         console.log(error);
-        return false;
+        return false; // return false so dependent functions know it failed
     }
 }
 
@@ -87,6 +86,3 @@ function updateActiveCity (cityElement) {
     console.log("active city updated");
     console.log(cityElement);
 }
-//getWeather().then(data => {
-//    console.log(data);
-//});
