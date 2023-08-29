@@ -7,6 +7,11 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
 }
 
+var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+var searchHistory = $("#search-history"); //city button container element
+console.log(localCities);
+updateSearchHistory();
+
 //getWeather();
 
 $("#city-search").click(function () { // when search button is clicked
@@ -91,4 +96,38 @@ function updateActiveCity (cityElement) {
     cityElement.addClass("active-city"); // add active class to clicked button
     console.log("active city updated");
     console.log(cityElement);
+}
+
+function updateSearchHistory() {
+    var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+    var searchHistory = $("#search-history"); //city button container element
+    searchHistory.children() = []; // clear search history
+    for (var i = 0; i < localCities.length; i++) { // for each city in local storage
+        var cityElement = new $("<button>"); // create new button element
+        cityElement.text(localCities[i]); // set text of new button to city name
+        cityElement.click( async function () {
+            updateActiveCity(this); // add active class to new button and remove from other buttons
+            var response = await getWeather() // get weather for new city
+            updateWeatherDisplay(response); // update weather
+        }
+        );
+        searchHistory.append(cityElement); // add new button to search history (city button container)
+    }
+
+}
+
+function updateWeatherDisplay(response) {
+    console.log("updateWeatherDisplay called");
+    console.log(response);
+    var currentWeather = $("#current-weather");
+    var forecast = $("#forecast");
+    currentWeather.children() = [];
+    forecast.children() = [];
+    var currentWeatherElement = new $("<div>");
+    var forecastElement = new $("<div>");
+    currentWeatherElement.text(response.city.name);
+    forecastElement.text(response.city.name);
+    currentWeather.append(currentWeatherElement);
+    forecast.append(forecastElement);
+    console.log("updateWeatherDisplay finished");
 }
