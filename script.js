@@ -37,6 +37,12 @@ async function addCity() {
         console.log("no bad weather response detected");
 
         var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+
+        if (localCities.includes(city)) { // if city is already in local storage
+            console.log("city already in local storage, add city aborted"); // log error
+            return false; // exit function
+        }
+        //console.log("city not in local storage, adding city");
         localCities.push(city); // add city to array
         localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
 
