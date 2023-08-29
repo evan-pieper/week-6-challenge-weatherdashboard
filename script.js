@@ -7,6 +7,8 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
 }
 
+updateSearchHistory(); // update search history with cities from local storage when page loads
+
 var clearHistoryButton = $("#clear-history"); // when clear history button is clicked, run clearHistory function
 clearHistoryButton.click(function () {
     clearHistory();
@@ -17,6 +19,7 @@ function clearHistory() {
     localStorage.setItem("cities", JSON.stringify([])); // clear local storage
     updateSearchHistory(); // update search history
     console.log("history cleared");
+    window.location.reload();
 }
 
 function updateSearchHistory() {
@@ -38,8 +41,6 @@ function updateSearchHistory() {
     }
 
 }
-
-updateSearchHistory(); // update search history with cities from local storage when page loads
 
 function updateActiveCity (cityElement) {
     console.log("updateActiveCity called");
