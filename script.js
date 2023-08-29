@@ -18,7 +18,7 @@ $(document).ready(function () { // when document is ready
         if (currentActive) { // if there is an active button
             currentActive.removeClass("active-city"); // remove active class from current button
         }
-        cityElement.addClass("active-city"); // add active class to clicked button
+        cityElement.classList.add("active-city"); // add active class to clicked button
         console.log("active city updated");
         console.log(cityElement);
     }
@@ -31,12 +31,13 @@ $(document).ready(function () { // when document is ready
         for (var i = 0; i < localCities.length; i++) { // for each city in local storage
             var cityElement = new $("<button>"); // create new button element
             cityElement.text(localCities[i]); // set text of new button to city name
+
             cityElement.click( async function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
                 var response = await getWeather() // get weather for new city
                 updateWeatherDisplay(response); // update weather
-            }
-            );
+            });
+
             searchHistory.append(cityElement); // add new button to search history (city button container)
         }
     
@@ -45,17 +46,17 @@ $(document).ready(function () { // when document is ready
     function updateWeatherDisplay(response) {  // TODO: finish this function to update weather display
         console.log("updateWeatherDisplay called");
         console.log(response);
-        var currentWeather = $("#current-weather");
-        var forecast = $("#forecast");
-        currentWeather.children() = [];
-        forecast.children() = [];
-        var currentWeatherElement = new $("<div>");
-        var forecastElement = new $("<div>");
-        currentWeatherElement.text(response.city.name);
-        forecastElement.text(response.city.name);
-        currentWeather.append(currentWeatherElement);
-        forecast.append(forecastElement);
-        console.log("updateWeatherDisplay finished");
+        //var currentWeather = $("#current-weather");
+        //var forecast = $("#forecast");
+        //currentWeather.children() = [];
+        //forecast.children() = [];
+        //var currentWeatherElement = new $("<div>");
+        //var forecastElement = new $("<div>");
+        //currentWeatherElement.text(response.city.name);
+        //forecastElement.text(response.city.name);
+        //currentWeather.append(currentWeatherElement);
+        //forecast.append(forecastElement);
+        //console.log("updateWeatherDisplay finished");
     }
 
     $("#city-search").click(function () { // when search button is clicked
