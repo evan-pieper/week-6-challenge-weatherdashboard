@@ -63,11 +63,11 @@ $(document).ready(function () { // when document is ready
     });
 
     function clearHistory() {
-    console.log("clearHistory called");
-    localStorage.setItem("cities", JSON.stringify([])); // clear local storage
-    updateSearchHistory(); // update search history
-    console.log("history cleared");
-}
+        console.log("clearHistory called");
+        localStorage.setItem("cities", JSON.stringify([])); // clear local storage
+        updateSearchHistory(); // update search history
+        console.log("history cleared");
+    }
 
     $("#city-search").click(function () { // when search button is clicked (city search button is hardcoded so don't need to use document.ready)
         console.log("search button clicked");
@@ -107,9 +107,15 @@ $(document).ready(function () { // when document is ready
         console.log(cityElement);
     }
 
-    function updateWeatherDisplay(response) {  // TODO: finish this function to update weather display
+    function updateWeatherDisplay() {  // TODO: finish this function to update weather display
         console.log("updateWeatherDisplay called");
         //console.log(response);
+        var activeCityName = $(".active-city").text();
+        console.log(activeCityName);
+        var activeCity = JSON.parse(localStorage.getItem("cities")).find(city => city.name === activeCityName); // get active city from local storage
+        var getWeatherResponse = getWeather(activeCity.lat, activeCity.lon);
+        console.log(getWeatherResponse);
+
         //var currentWeather = $("#current-weather");
         //var forecast = $("#forecast");
         //currentWeather.children() = [];
@@ -161,7 +167,11 @@ $(document).ready(function () { // when document is ready
             localCities.push(city); // add city to array
             localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
             console.log("city added to local storage");
+
             updateSearchHistory(); // update search history with new city
+            updateActiveCity(city); // add active class to new button and remove from other buttons
+            updateWeatherDisplay(); // update weather display with new city
+
         } catch (error) {
             console.log(error);
             return false;
