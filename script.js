@@ -72,7 +72,10 @@ $(document).ready(function () { // when document is ready
             defaultCities[i] = city; // replace city name with city object
         }
         localStorage.setItem("cities", JSON.stringify(defaultCities)); // save default cities to local storage
-        console.log("default cities loaded");
+        console.log("default cities loaded, updating display");
+        updateSearchHistory(); // update search history with default cities
+        var firstDefault = $("#search-history").children()[0]; // get first city button
+        updateActiveCity(firstDefault); // add active class to first city button (London)
     }
 
     if (localStorage.getItem("cities").length === 0) { // if no cities in local storage
@@ -80,7 +83,7 @@ $(document).ready(function () { // when document is ready
     }
 
     if ($(".active-city")) { // if there is an active city
-        updateWeatherDisplay(); // update weather display with active city when page loads
+        //updateWeatherDisplay(); // update weather display with active city when page loads
     }
 
     var clearHistoryButton = $("#clear-history"); // when clear history button is clicked, run clearHistory function
@@ -91,8 +94,7 @@ $(document).ready(function () { // when document is ready
     function clearHistory() {
         console.log("clearHistory called");
         localStorage.setItem("cities", JSON.stringify([])); // clear local storage
-        loadDefaultCities(); // load default cities into local storage
-        updateSearchHistory(); // update search history
+        loadDefaultCities(); // load default cities into local storage, then update display
         console.log("history cleared");
     }
 
@@ -110,9 +112,9 @@ $(document).ready(function () { // when document is ready
         }
         for (var i = 0; i < localCities.length; i++) { // for each city in local storage
             var cityElement = new $("<button>"); // create new button element
-            cityElement.text(localCities[i]); // set text of new button to city name
-    
-            cityElement.click( async function () {
+            cityElement.text(localCities[i].name); // set text of new button to city name
+            console.log("city name: " + cityElement.text);
+            cityElement.click( function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
                 updateWeatherDisplay(); // update weather display with new city
             });
@@ -133,12 +135,13 @@ $(document).ready(function () { // when document is ready
         console.log(cityElement);
     }
 
-    function updateWeatherDisplay() {  // TODO: finish this function to update weather display
+    async function updateWeatherDisplay() {  // TODO: finish this function to update weather display
         console.log("updateWeatherDisplay called");
         //console.log(response);
         var activeCityName = $(".active-city").text();
-        console.log(activeCityName);
-        var activeCity = JSON.parse(localStorage.getItem("cities")).find(city => city.name === activeCityName); // get active city from local storage
+        console.log("active city name: " + activeCityName);
+        var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
+        var activeCity = localCities.find(city => city.name === activeCityName); // get active city from local storage
         var getWeatherResponse = getWeather(activeCity.lat, activeCity.lon);
         console.log(getWeatherResponse);
 
@@ -198,7 +201,7 @@ $(document).ready(function () { // when document is ready
 
             updateSearchHistory(); // update search history with new city
             updateActiveCity(city); // add active class to new button and remove from other buttons
-            updateWeatherDisplay(); // update weather display with new city
+            //updateWeatherDisplay(); // update weather display with new city
 
         } catch (error) {
             console.log(error);
