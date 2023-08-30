@@ -7,6 +7,10 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
 }
 
+if(localStorage.getItem("activeCity") === null) { // if no active city in local storage
+    localStorage.setItem("activeCity", JSON.stringify("New York")); // set active city to New York
+}
+
 async function getCoordinates(query) {
     try {
         console.log("getCoordinates called");
@@ -52,20 +56,30 @@ async function getWeather(lat, lon) { // get weather for city from lat and lon (
 $(document).ready(function () { // when document is ready
     console.log("document ready");
 
-    async function testGetCoordinates() { // test getCoordinates function
+    /*async function testGetCoordinates() { // test getCoordinates function
         NewYorkCoord = await getCoordinates("New York"); // get coordinates for New York
         LondonCoord = await getCoordinates("London"); // get coordinates for London
         console.log("NY: " + NewYorkCoord); 
         console.log("London: " + LondonCoord);
-    }
-
-    testGetCoordinates(); // test getCoordinates function
+    } */
 
     updateSearchHistory(); // update search history with cities from local storage when page loads
 
+    var activeCityInit = JSON.parse(localStorage.getItem("activeCity")); // get active city from local storage
+    console.log("active city init: " + activeCityInit);
+    var activeCityButton = $("#search-history").children().filter(function () { // get active city button
+        if ($(this).text() === activeCityInit) {
+            return true;
+        }
+    });
+    console.log(activeCityButton);
+    updateActiveCity(activeCityButton[0]); // add active class to active city button (need to use [0] because filter returns an array)
+
+
+
     async function loadDefaultCities() { // load default cities into local storage
         console.log("loadDefaultCities called");
-        var defaultCities = ["London", "New York", "Tokyo", "Sydney", "Paris"]; // default cities
+        var defaultCities = ["New York", "Los Angeles"]; // default cities
         for (var i = 0; i < defaultCities.length; i++) { // for each default city
             var cityCoordinates = await getCoordinates(defaultCities[i]); // get coordinates for city
             var cityLat = cityCoordinates[0]; // get lat and lon from getCoordinates response
@@ -81,7 +95,7 @@ $(document).ready(function () { // when document is ready
         console.log("default cities loaded, updating display");
         updateSearchHistory(); // update search history with default cities
         var firstDefault = $("#search-history").children()[0]; // get first city button
-        updateActiveCity(firstDefault); // add active class to first city button (London)
+        updateActiveCity(firstDefault); // add active class to first city button (New York)
     }
 
     if (localStorage.getItem("cities").length === 0) { // if no cities in local storage
@@ -89,7 +103,7 @@ $(document).ready(function () { // when document is ready
     }
 
     if ($(".active-city")) { // if there is an active city
-        //updateWeatherDisplay(); // update weather display with active city when page loads
+        updateWeatherDisplay(); // update weather display with active city when page loads
     }
 
     var clearHistoryButton = $("#clear-history"); // when clear history button is clicked, run clearHistory function
@@ -121,7 +135,7 @@ $(document).ready(function () { // when document is ready
             cityElement.text(localCities[i].name); // set text of new button to city name
             cityElement.click( function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
-                //updateWeatherDisplay(); // update weather display with new city
+                updateWeatherDisplay(); // update weather display with new city
             });
     
             searchHistory.append(cityElement); // add new button to search history (city button container)
@@ -138,6 +152,7 @@ $(document).ready(function () { // when document is ready
         cityElement.classList.add("active-city"); // add active class to clicked button
         console.log("active city updated");
         console.log(cityElement);
+        localStorage.setItem("activeCity", JSON.stringify(cityElement.textContent)); // save active city to local storage
     }
 
     async function updateWeatherDisplay() {  // TODO: finish this function to update weather display
@@ -146,9 +161,9 @@ $(document).ready(function () { // when document is ready
         var activeCityName = $(".active-city").text();
         console.log("active city name: " + activeCityName);
         var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
-        var activeCity = localCities.find(city => city.name === activeCityName); // get active city from local storage
-        var getWeatherResponse = getWeather(activeCity.lat, activeCity.lon);
-        console.log(getWeatherResponse);
+        //var activeCity = localCities.find(city => city.name === activeCityName); // get active city from local storage
+        //var getWeatherResponse = getWeather(activeCity.lat, activeCity.lon);
+        //console.log(getWeatherResponse);
 
         //var currentWeather = $("#current-weather");
         //var forecast = $("#forecast");
@@ -160,7 +175,7 @@ $(document).ready(function () { // when document is ready
         //forecastElement.text(response.city.name);
         //currentWeather.append(currentWeatherElement);
         //forecast.append(forecastElement);
-        //console.log("updateWeatherDisplay finished");
+        console.log("updateWeatherDisplay finished");
     }
 
     async function addCity() {
@@ -203,9 +218,13 @@ $(document).ready(function () { // when document is ready
             console.log("city added to local storage");
 
             updateSearchHistory(); // update search history with new city
-            var newCityButton = $("#search-history").children().last(); // get new city button
+            var searchHistory = $("#search-history"); // get number of cities in search history
+            console.log(searchHistory.children());
+            console.log(searchHistory.children().length);
+            var newCityButton = searchHistory.children()[searchHistory.length-1]; // get new city button
+            console.log(newCityButton); // for some reason this is always the last value in the default buttons, it never includes non default buttons
             updateActiveCity(newCityButton); // add active class to new button and remove from other buttons
-            //updateWeatherDisplay(); // update weather display with new city
+            updateWeatherDisplay(); // update weather display with new city
 
         } catch (error) {
             console.log(error);
