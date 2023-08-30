@@ -87,8 +87,7 @@ $(document).ready(function () { // when document is ready
     
             cityElement.click( async function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
-                var response = await getWeather(this.lat, this.lon) // get weather for new city
-                updateWeatherDisplay(response); // update weather
+                updateWeatherDisplay(); // update weather display with new city
             });
     
             searchHistory.append(cityElement); // add new button to search history (city button container)
