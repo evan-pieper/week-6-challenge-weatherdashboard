@@ -57,6 +57,10 @@ $(document).ready(function () { // when document is ready
 
     updateSearchHistory(); // update search history with cities from local storage when page loads
 
+    if ($(".active-city")) { // if there is an active city
+        updateWeatherDisplay(); // update weather display with active city when page loads
+    }
+
     var clearHistoryButton = $("#clear-history"); // when clear history button is clicked, run clearHistory function
     clearHistoryButton.click(function () {
         clearHistory();
