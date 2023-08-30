@@ -9,7 +9,7 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
 
 async function getCoordinates(query) {
     try {
-        console.log("getWeather called");
+        console.log("getCoordinates called");
         const url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + query + '&appid=' + API_KEY + '&units=' + units; // create url
         const response = await fetch(url); // fetch data from url
         if (!response.ok) { // if response is not ok
@@ -17,13 +17,11 @@ async function getCoordinates(query) {
         }
         else { // if response is ok
             const data = await response.json(); // get data from response
-            console.log("getWeather response: ");
-            console.log(data);
-            const lat = data.city.coord.lat;
+            const lat = data.city.coord.lat; // get lat and lon from data
             const lon = data.city.coord.lon;
             console.log("lat: " + lat + "lon: " + lon);
 
-            return [Lat,Lon]; // return data
+            return [lat,lon]; // return lat and lon as array
         }
     } catch (error) { // if error contacting api
         console.log(error);
@@ -52,7 +50,7 @@ async function getWeather(lat, lon) { // get weather for city from lat and lon (
 }
 
 const LondonCoord = getCoordinates("London"); // get weather for London
-console.log(weatherResponse); // log weather response (should be a promise)
+console.log(LondonCoord); // log weather response (should be a promise)
 
 $(document).ready(function () { // when document is ready
     console.log("document ready");
@@ -89,7 +87,7 @@ $(document).ready(function () { // when document is ready
     
             cityElement.click( async function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
-                var response = await getWeather() // get weather for new city
+                var response = await getWeather(this.lat, this.lon) // get weather for new city
                 updateWeatherDisplay(response); // update weather
             });
     
@@ -137,11 +135,10 @@ $(document).ready(function () { // when document is ready
                 return false; // exit function
             }
             
-            const weatherResponse = await getWeather(city);
+            const cityCoordinates = await getCoordinates(city);
     
-            console.log("weatherResponse: " + weatherResponse);
-            if(!weatherResponse) { // if city not found
-                console.log("bad getWeather response, add city failed (city not found)"); // log error
+            if(!cityCoordinates) { // if city not found
+                console.log("bad getCoordinates response, add city failed (city not found)"); // log error
                 alert("City not found"); // alert user
                 return false; // exit function
             }
@@ -150,8 +147,8 @@ $(document).ready(function () { // when document is ready
     
             var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
     
-            const cityLat = weatherResponse.city.coord.lat; // get city lat and lon from weather response
-            const cityLon = weatherResponse.city.coord.lon;
+            const cityLat = cityCoordinates[0]; // get city lat and lon from getCoordinates response
+            const cityLon = cityCoordinates[1];
 
             city.lat = cityLat; // add lat and lon to city object
             city.lon = cityLon;
