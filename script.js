@@ -59,13 +59,14 @@ $(document).ready(function () { // when document is ready
 
     async function loadDefaultCities() { // load default cities into local storage
         console.log("loadDefaultCities called");
-        var defaultCities = ["London", "New-York", "Tokyo", "Sydney", "Paris"]; // default cities
+        var defaultCities = ["London", "New York", "Tokyo", "Sydney", "Paris"]; // default cities
         for (var i = 0; i < defaultCities.length; i++) { // for each default city
             var cityCoordinates = await getCoordinates(defaultCities[i]); // get coordinates for city
             var cityLat = cityCoordinates[0]; // get lat and lon from getCoordinates response
             var cityLon = cityCoordinates[1];
             var city = { // create city object
                 name: defaultCities[i],
+                URLName: defaultCities[i].replace(/\s/g, '-'),
                 lat: cityLat,
                 lon: cityLon
             }
@@ -116,7 +117,7 @@ $(document).ready(function () { // when document is ready
             console.log("city name: " + cityElement.text);
             cityElement.click( function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
-                updateWeatherDisplay(); // update weather display with new city
+                //updateWeatherDisplay(); // update weather display with new city
             });
     
             searchHistory.append(cityElement); // add new button to search history (city button container)
@@ -170,9 +171,9 @@ $(document).ready(function () { // when document is ready
                 return false; // exit function
             }
 
-            let cityString = city.replace(/\s/g, ''); // remove spaces from city name
+            let formattedCityName = city.replace(/\s/g, '-'); // remove spaces from city name
             
-            const cityCoordinates = await getCoordinates(cityString);
+            const cityCoordinates = await getCoordinates(formattedCityName);
     
             if(!cityCoordinates) { // if city not found
                 console.log("bad getCoordinates response, add city failed (city not found)"); // log error
@@ -186,6 +187,7 @@ $(document).ready(function () { // when document is ready
     
             let cityObject = { // create city object
                 name: city,
+                URLName: formattedCityName,
                 lat: cityCoordinates[0],
                 lon: cityCoordinates[1]
             }
