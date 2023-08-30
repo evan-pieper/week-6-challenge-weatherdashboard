@@ -49,11 +49,17 @@ async function getWeather(lat, lon) { // get weather for city from lat and lon (
     }
 }
 
-const LondonCoord = getCoordinates("London"); // get weather for London
-console.log(LondonCoord); // log weather response (should be a promise)
-
 $(document).ready(function () { // when document is ready
     console.log("document ready");
+
+    async function testGetCoordinates() { // test getCoordinates function
+        NewYorkCoord = await getCoordinates("New York"); // get coordinates for New York
+        LondonCoord = await getCoordinates("London"); // get coordinates for London
+        console.log("NY: " + NewYorkCoord); 
+        console.log("London: " + LondonCoord);
+    }
+
+    testGetCoordinates(); // test getCoordinates function
 
     updateSearchHistory(); // update search history with cities from local storage when page loads
 
@@ -66,7 +72,6 @@ $(document).ready(function () { // when document is ready
             var cityLon = cityCoordinates[1];
             var city = { // create city object
                 name: defaultCities[i],
-                URLName: defaultCities[i].replace(/\s/g, '-'),
                 lat: cityLat,
                 lon: cityLon
             }
@@ -114,7 +119,6 @@ $(document).ready(function () { // when document is ready
         for (var i = 0; i < localCities.length; i++) { // for each city in local storage
             var cityElement = new $("<button>"); // create new button element
             cityElement.text(localCities[i].name); // set text of new button to city name
-            console.log("city name: " + cityElement.text);
             cityElement.click( function () {
                 updateActiveCity(this); // add active class to new button and remove from other buttons
                 //updateWeatherDisplay(); // update weather display with new city
@@ -170,10 +174,8 @@ $(document).ready(function () { // when document is ready
                 alert("Please enter a city"); // alert user
                 return false; // exit function
             }
-
-            let formattedCityName = city.replace(/\s/g, '-'); // remove spaces from city name
             
-            const cityCoordinates = await getCoordinates(formattedCityName);
+            const cityCoordinates = await getCoordinates(city);
     
             if(!cityCoordinates) { // if city not found
                 console.log("bad getCoordinates response, add city failed (city not found)"); // log error
@@ -187,7 +189,6 @@ $(document).ready(function () { // when document is ready
     
             let cityObject = { // create city object
                 name: city,
-                URLName: formattedCityName,
                 lat: cityCoordinates[0],
                 lon: cityCoordinates[1]
             }
@@ -202,7 +203,8 @@ $(document).ready(function () { // when document is ready
             console.log("city added to local storage");
 
             updateSearchHistory(); // update search history with new city
-            updateActiveCity(city); // add active class to new button and remove from other buttons
+            var newCityButton = $("#search-history").children().last(); // get new city button
+            updateActiveCity(newCityButton); // add active class to new button and remove from other buttons
             //updateWeatherDisplay(); // update weather display with new city
 
         } catch (error) {
