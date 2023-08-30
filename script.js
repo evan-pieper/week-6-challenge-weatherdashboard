@@ -17,7 +17,8 @@ async function getWeather(query) {
         }
         else { // if response is ok
             const data = await response.json(); // get data from response
-            console.log("getWeather response: " + data);
+            console.log("getWeather response: ");
+            console.log(data);
             return data; // return data
         }
     } catch (error) { // if error contacting api
@@ -25,6 +26,9 @@ async function getWeather(query) {
         return false; // return false so dependent functions know it failed
     }
 }
+
+const weatherResponse = getWeather("London"); // get weather for London
+console.log(weatherResponse); // log weather response (should be a promise)
 
 $(document).ready(function () { // when document is ready
     console.log("document ready");
@@ -55,7 +59,6 @@ $(document).ready(function () { // when document is ready
         for (var i = 0; i < searchHistoryButtons.length; i++) { // for each city button
             searchHistoryButtons[i].remove(); // remove city button
         }
-        console.log("search html: " + searchHistory.innerHTML);
         for (var i = 0; i < localCities.length; i++) { // for each city in local storage
             var cityElement = new $("<button>"); // create new button element
             cityElement.text(localCities[i]); // set text of new button to city name
@@ -111,6 +114,7 @@ $(document).ready(function () { // when document is ready
             }
             
             const weatherResponse = await getWeather(city);
+    
             console.log("weatherResponse: " + weatherResponse);
             if(!weatherResponse) { // if city not found
                 console.log("bad getWeather response, add city failed (city not found)"); // log error
@@ -122,6 +126,12 @@ $(document).ready(function () { // when document is ready
     
             var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
     
+            const cityLat = weatherResponse.city.coord.lat; // get city lat and lon from weather response
+            const cityLon = weatherResponse.city.coord.lon;
+
+            city.lat = cityLat; // add lat and lon to city object
+            city.lon = cityLon;
+            
             if (localCities.includes(city)) { // if city is already in local storage
                 console.log("city already in local storage, add city aborted"); // log error
                 return false; // exit function
