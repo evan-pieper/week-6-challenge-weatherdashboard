@@ -57,6 +57,28 @@ $(document).ready(function () { // when document is ready
 
     updateSearchHistory(); // update search history with cities from local storage when page loads
 
+    async function loadDefaultCities() { // load default cities into local storage
+        console.log("loadDefaultCities called");
+        var defaultCities = ["London", "New-York", "Tokyo", "Sydney", "Paris"]; // default cities
+        for (var i = 0; i < defaultCities.length; i++) { // for each default city
+            var cityCoordinates = await getCoordinates(defaultCities[i]); // get coordinates for city
+            var cityLat = cityCoordinates[0]; // get lat and lon from getCoordinates response
+            var cityLon = cityCoordinates[1];
+            var city = { // create city object
+                name: defaultCities[i],
+                lat: cityLat,
+                lon: cityLon
+            }
+            defaultCities[i] = city; // replace city name with city object
+        }
+        localStorage.setItem("cities", JSON.stringify(defaultCities)); // save default cities to local storage
+        console.log("default cities loaded");
+    }
+
+    if (localStorage.getItem("cities").length === 0) { // if no cities in local storage
+        loadDefaultCities(); // load default cities into local storage
+    }
+
     if ($(".active-city")) { // if there is an active city
         updateWeatherDisplay(); // update weather display with active city when page loads
     }
@@ -69,6 +91,7 @@ $(document).ready(function () { // when document is ready
     function clearHistory() {
         console.log("clearHistory called");
         localStorage.setItem("cities", JSON.stringify([])); // clear local storage
+        loadDefaultCities(); // load default cities into local storage
         updateSearchHistory(); // update search history
         console.log("history cleared");
     }
@@ -143,8 +166,10 @@ $(document).ready(function () { // when document is ready
                 alert("Please enter a city"); // alert user
                 return false; // exit function
             }
+
+            let cityString = city.replace(/\s/g, ''); // remove spaces from city name
             
-            const cityCoordinates = await getCoordinates(city);
+            const cityCoordinates = await getCoordinates(cityString);
     
             if(!cityCoordinates) { // if city not found
                 console.log("bad getCoordinates response, add city failed (city not found)"); // log error
@@ -156,18 +181,18 @@ $(document).ready(function () { // when document is ready
     
             var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
     
-            const cityLat = cityCoordinates[0]; // get city lat and lon from getCoordinates response
-            const cityLon = cityCoordinates[1];
+            let cityObject = { // create city object
+                name: city,
+                lat: cityCoordinates[0],
+                lon: cityCoordinates[1]
+            }
 
-            city.lat = cityLat; // add lat and lon to city object
-            city.lon = cityLon;
-
-            if (localCities.includes(city)) { // if city is already in local storage
+            if (localCities.includes(cityObject)) { // if city is already in local storage
                 console.log("city already in local storage, add city aborted"); // log error
                 return false; // exit function
             }
             //console.log("city not in local storage, adding city");
-            localCities.push(city); // add city to array
+            localCities.push(cityObject); // add city to array
             localStorage.setItem("cities", JSON.stringify(localCities)); // save to local storage
             console.log("city added to local storage");
 
