@@ -7,10 +7,34 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
 }
 
-async function getWeather(query) {
+async function getCoordinates(query) {
     try {
         console.log("getWeather called");
         const url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + query + '&appid=' + API_KEY + '&units=' + units; // create url
+        const response = await fetch(url); // fetch data from url
+        if (!response.ok) { // if response is not ok
+            throw new Error(response.status); // throw error
+        }
+        else { // if response is ok
+            const data = await response.json(); // get data from response
+            console.log("getWeather response: ");
+            console.log(data);
+            const lat = data.city.coord.lat;
+            const lon = data.city.coord.lon;
+            console.log("lat: " + lat + "lon: " + lon);
+
+            return [Lat,Lon]; // return data
+        }
+    } catch (error) { // if error contacting api
+        console.log(error);
+        return false; // return false so dependent functions know it failed
+    }
+}
+
+async function getWeather(lat, lon) { // get weather for city from lat and lon (call after getting lat and lon from getCoordinates)
+    try {
+        console.log("getWeather called");
+        const url = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + API_KEY; // create url
         const response = await fetch(url); // fetch data from url
         if (!response.ok) { // if response is not ok
             throw new Error(response.status); // throw error
@@ -27,7 +51,7 @@ async function getWeather(query) {
     }
 }
 
-const weatherResponse = getWeather("London"); // get weather for London
+const LondonCoord = getCoordinates("London"); // get weather for London
 console.log(weatherResponse); // log weather response (should be a promise)
 
 $(document).ready(function () { // when document is ready
@@ -131,7 +155,7 @@ $(document).ready(function () { // when document is ready
 
             city.lat = cityLat; // add lat and lon to city object
             city.lon = cityLon;
-            
+
             if (localCities.includes(city)) { // if city is already in local storage
                 console.log("city already in local storage, add city aborted"); // log error
                 return false; // exit function
