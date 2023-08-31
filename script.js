@@ -2,7 +2,6 @@ const API_KEY = "1f1a0b357b3859141a1f736da585facd"; // api key (would hide this 
 const units = "imperial";
 //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API_KEY}
 //api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
-const dayjs = require('dayjs');
 
 if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
@@ -193,7 +192,7 @@ $(document).ready(function () { // when document is ready
             }
 
             var dayForecast = getWeatherResponse.list[i]; // get day forecast from getWeather response
-            var dayForecastDate = dayForecast.dt_txt; // get date from day forecast
+            var dayForecastDate = dayjs(dayForecast.dt_txt).format("DD/MM/YYYY"); // get date from day forecast
             console.log(dayForecastDate);
             var dayForecastTemp = dayForecast.main.temp; // get temp from day forecast
             var dayForecastWindSpeed = dayForecast.wind.speed; // get wind speed from day forecast
