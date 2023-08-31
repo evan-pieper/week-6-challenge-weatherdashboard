@@ -166,8 +166,9 @@ $(document).ready(function () { // when document is ready
         console.log(getWeatherResponse);
 
         var allDayElements = $(".day"); // get all day elements
-
+        let dayTracker = 0;
         for (var i = 0; i < allDayElements.length; i++) { // for each day element
+             
             var dayElement = allDayElements[i]; // get day element
             //console.log(dayElement);
             //$(dayElement).empty(); // empty day element (remove all children)
@@ -182,17 +183,15 @@ $(document).ready(function () { // when document is ready
 
             if(i === 0) { // if first day element
                 //TODO: 
-                console.log("getWeather response: ");
-                //console.log(getWeatherResponse);
-                console.log("getWeather response city: ");
-                console.log(getWeatherResponse.city.name);
-                var cityName = $("<h2>"); // create city name element
-                //cityName.text = getWeatherResponse.city.name[0]; // get city name from getWeather response
-                dayElement.append(cityName); // add city name element to day element
+                var cityNameResponse = getWeatherResponse.city.name; // get city name from getWeather response
+                console.log("city name response: " + cityNameResponse);
+                var cityNameElement = $("<h2>" + cityNameResponse + "</h2>"); // create city name element
+                console.log(cityNameElement[0]);
+                dayElement.append(cityNameElement[0]); // add city name element to day element
             }
 
-            var dayForecast = getWeatherResponse.list[i]; // get day forecast from getWeather response
-            var dayForecastDate = dayjs(dayForecast.dt_txt).format("DD/MM/YYYY"); // get date from day forecast
+            var dayForecast = getWeatherResponse.list[dayTracker]; // get day forecast from getWeather response
+            var dayForecastDate = dayjs(dayForecast.dt_txt).format("MM/DD/YYYY"); // get date from day forecast
             console.log(dayForecastDate);
             var dayForecastTemp = dayForecast.main.temp; // get temp from day forecast
             var dayForecastWindSpeed = dayForecast.wind.speed; // get wind speed from day forecast
@@ -208,6 +207,12 @@ $(document).ready(function () { // when document is ready
             //dayElement.append($("<p>").text("Temp: " + dayForecastTemp[0] + "°F")); // add temp to day element
             //dayElement.append($("<p>").text("Wind: " + dayForecastWindSpeed[0] + " MPH")); // add wind speed to day element
             //dayElement.append($("<p>").text("Humidity: " + dayForecastHumidity[0] + "%")); // add humidity to day element
+
+            dayTracker = dayTracker + 8;
+            if(i === allDayElements.length-2)
+            {
+                dayTracker = dayTracker -1; // this is a hacky fix for the last day element not displaying the correct day (it falls off the end of the array otherwise)
+            }
         }
 
         //var currentWeather = $("#current-weather");
