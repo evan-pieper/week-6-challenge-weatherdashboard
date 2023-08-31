@@ -53,6 +53,9 @@ async function getWeather(lat, lon) { // get weather for city from lat and lon (
     }
 }
 
+//_______________ DOM Stuff __________________________________//\
+
+
 $(document).ready(function () { // when document is ready
     console.log("document ready");
 
@@ -96,6 +99,7 @@ $(document).ready(function () { // when document is ready
         updateSearchHistory(); // update search history with default cities
         var firstDefault = $("#search-history").children()[0]; // get first city button
         updateActiveCity(firstDefault); // add active class to first city button (New York)
+        updateWeatherDisplay(); // update weather display with first city (New York)
     }
 
     if (localStorage.getItem("cities").length === 0) { // if no cities in local storage
@@ -153,6 +157,7 @@ $(document).ready(function () { // when document is ready
         console.log("active city updated");
         console.log(cityElement);
         localStorage.setItem("activeCity", JSON.stringify(cityElement.textContent)); // save active city to local storage
+        updateWeatherDisplay(); // update weather display with new city
     }
 
     async function updateWeatherDisplay() {  // TODO: finish this function to update weather display

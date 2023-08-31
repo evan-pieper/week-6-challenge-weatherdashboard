@@ -4,19 +4,30 @@ header{
     text-align: end;
 }
 
+a{
+    background-color: grey;
+}
+
 main{
     display: flex;
     flex-wrap: nowrap;
+    flex-direction: row;
 }
 
-a{
-    background-color: grey;
+.city-holder{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    flex: 1;
+    margin-right: 10px;
 }
 
 .weather-holder{
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-around;
+    flex: 3;
 }
 
 #day-forecast{
@@ -29,13 +40,35 @@ a{
     border: 2px solid grey;
     display: flex;
     flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .day{
     border: 2px solid grey;
+    background-color: #082452;
+    color: white    
 }
 
 .active-city{
     background-color: #1A2DE0;
     color: white;
+}
+
+#search-holder {
+    padding-bottom: 20px;
+    border-bottom : 5px solid grey;
+    justify-content: space-around;
+    
+}
+
+#search-history {
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+}
+button {
+    display: block;
 }

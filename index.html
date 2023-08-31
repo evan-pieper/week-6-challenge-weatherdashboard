@@ -13,9 +13,11 @@
 
     <main>
         <div class = "city-holder">
-            <h2>Search for a City:</h3>
-            <input type="text" id="city-input" placeholder="City Name">
-            <button id="city-search">Search</button>
+            <div id = search-holder>
+                <h2>Search for a City:</h3>
+                <input type="text" id="city-input" placeholder="City Name">
+                <button id="city-search">Search</button>
+            </div>
 
             <div id = "search-history">
                 
@@ -34,8 +36,8 @@
                 <p class = "day-humidity">Humidity</p>
             </div>
 
+            <h2 id = "FiveHeadline">5-Day Forecast</h2>
             <div class = "week" id = "week-forecast">
-                <h2 id = "FiveHeadline">5-Day Forecast</h2>
                 <div class = "day">
                     <h3 class = "day-date">Day 1</h3>
                     <p class = "day-icon">Icon</p>
