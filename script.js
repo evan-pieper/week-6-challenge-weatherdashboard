@@ -191,22 +191,29 @@ $(document).ready(function () { // when document is ready
             }
 
             var dayForecast = getWeatherResponse.list[dayTracker]; // get day forecast from getWeather response
+
             var dayForecastDate = dayjs(dayForecast.dt_txt).format("MM/DD/YYYY"); // get date from day forecast
-            console.log(dayForecastDate);
+            var dayForecastDateElement = $("<h3>"); // create date element
+            dayForecastDateElement.text(dayForecastDate); // set date element text to date
+            dayElement.append(dayForecastDateElement[0]); // add date element to day element
+
             var dayForecastTemp = dayForecast.main.temp; // get temp from day forecast
+            var dayForecastTempElement = $("<p> Temp: " + dayForecastTemp + "°F </p>"); // create temp element
+            dayElement.append(dayForecastTempElement[0]); // add temp element to day element
+
             var dayForecastWindSpeed = dayForecast.wind.speed; // get wind speed from day forecast
+            var dayForecastWindSpeedElement = $("<p>").text("Wind: " + dayForecastWindSpeed + " MPH"); // create wind speed element
+            dayElement.append(dayForecastWindSpeedElement[0]); // add wind speed element to day element
+
             var dayForecastHumidity = dayForecast.main.humidity; // get humidity from day forecast
+            var dayForecastHumidityElement = $("<p>").text("Humidity: " + dayForecastHumidity + "%"); // create humidity element
+            dayElement.append(dayForecastHumidityElement[0]); // add humidity element to day element
+
             var dayForecastIcon = dayForecast.weather[0].icon; // get icon from day forecast
             var dayForecastIconURL = "http://openweathermap.org/img/w/" + dayForecastIcon + ".png"; // create icon url from icon
             var dayForecastIconElement = $("<img>"); // create icon element
             dayForecastIconElement.attr("src", dayForecastIconURL); // set icon element src to icon url
-            var dayForecastDateElement = $("<h3>"); // create date element
-            dayForecastDateElement.text(dayForecastDate); // set date element text to date
-            dayElement.append(dayForecastDateElement[0]); // add date element to day element
             dayElement.append(dayForecastIconElement[0]); // add icon element to day element
-            //dayElement.append($("<p>").text("Temp: " + dayForecastTemp[0] + "°F")); // add temp to day element
-            //dayElement.append($("<p>").text("Wind: " + dayForecastWindSpeed[0] + " MPH")); // add wind speed to day element
-            //dayElement.append($("<p>").text("Humidity: " + dayForecastHumidity[0] + "%")); // add humidity to day element
 
             dayTracker = dayTracker + 8;
             if(i === allDayElements.length-2)
