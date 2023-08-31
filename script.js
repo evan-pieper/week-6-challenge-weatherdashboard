@@ -2,6 +2,7 @@ const API_KEY = "1f1a0b357b3859141a1f736da585facd"; // api key (would hide this 
 const units = "imperial";
 //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API_KEY}
 //api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
+const dayjs = require('dayjs');
 
 if(localStorage.getItem("cities") === null) { // if no cities in local storage
     localStorage.setItem("cities", JSON.stringify([])); // create empty array
@@ -36,7 +37,7 @@ async function getCoordinates(query) {
 async function getWeather(lat, lon) { // get weather for city from lat and lon (call after getting lat and lon from getCoordinates)
     try {
         console.log("getWeather called");
-        const url = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + API_KEY; // create url
+        const url = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&units=' + units + '&appid=' + API_KEY; // create url
         const response = await fetch(url); // fetch data from url
         if (!response.ok) { // if response is not ok
             throw new Error(response.status); // throw error
@@ -161,9 +162,54 @@ $(document).ready(function () { // when document is ready
         var activeCityName = $(".active-city").text();
         console.log("active city name: " + activeCityName);
         var localCities = JSON.parse(localStorage.getItem("cities")); // get cities from local storage
-        //var activeCity = localCities.find(city => city.name === activeCityName); // get active city from local storage
-        //var getWeatherResponse = getWeather(activeCity.lat, activeCity.lon);
-        //console.log(getWeatherResponse);
+        var activeCity = localCities.find(city => city.name === activeCityName); // get active city from local storage
+        var getWeatherResponse = await getWeather(activeCity.lat, activeCity.lon); // get weather for active city
+        console.log(getWeatherResponse);
+
+        var allDayElements = $(".day"); // get all day elements
+
+        for (var i = 0; i < allDayElements.length; i++) { // for each day element
+            var dayElement = allDayElements[i]; // get day element
+            //console.log(dayElement);
+            //$(dayElement).empty(); // empty day element (remove all children)
+            var dayChildren = $(dayElement).children(); // get day element children
+            //console.log(dayChildren);
+            for (var j = 0; j < dayChildren.length; j++) { // for each day element child
+                $(dayChildren[j]).remove(); // remove day element child
+            }
+
+            //console.log(dayChildren);
+            console.log("day element cleared");
+
+            if(i === 0) { // if first day element
+                //TODO: 
+                console.log("getWeather response: ");
+                //console.log(getWeatherResponse);
+                console.log("getWeather response city: ");
+                console.log(getWeatherResponse.city.name);
+                var cityName = $("<h2>"); // create city name element
+                //cityName.text = getWeatherResponse.city.name[0]; // get city name from getWeather response
+                dayElement.append(cityName); // add city name element to day element
+            }
+
+            var dayForecast = getWeatherResponse.list[i]; // get day forecast from getWeather response
+            var dayForecastDate = dayForecast.dt_txt; // get date from day forecast
+            console.log(dayForecastDate);
+            var dayForecastTemp = dayForecast.main.temp; // get temp from day forecast
+            var dayForecastWindSpeed = dayForecast.wind.speed; // get wind speed from day forecast
+            var dayForecastHumidity = dayForecast.main.humidity; // get humidity from day forecast
+            var dayForecastIcon = dayForecast.weather[0].icon; // get icon from day forecast
+            var dayForecastIconURL = "http://openweathermap.org/img/w/" + dayForecastIcon + ".png"; // create icon url from icon
+            var dayForecastIconElement = $("<img>"); // create icon element
+            dayForecastIconElement.attr("src", dayForecastIconURL); // set icon element src to icon url
+            var dayForecastDateElement = $("<h3>"); // create date element
+            dayForecastDateElement.text(dayForecastDate); // set date element text to date
+            dayElement.append(dayForecastDateElement[0]); // add date element to day element
+            dayElement.append(dayForecastIconElement[0]); // add icon element to day element
+            //dayElement.append($("<p>").text("Temp: " + dayForecastTemp[0] + "°F")); // add temp to day element
+            //dayElement.append($("<p>").text("Wind: " + dayForecastWindSpeed[0] + " MPH")); // add wind speed to day element
+            //dayElement.append($("<p>").text("Humidity: " + dayForecastHumidity[0] + "%")); // add humidity to day element
+        }
 
         //var currentWeather = $("#current-weather");
         //var forecast = $("#forecast");

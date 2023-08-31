@@ -34,3 +34,8 @@ a{
 .day{
     border: 2px solid grey;
 }
+
+.active-city{
+    background-color: #1A2DE0;
+    color: white;
+}
