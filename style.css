@@ -43,6 +43,11 @@ main{
     flex: 1;
 }
 
+#day-forecast > *{ 
+    margin: 0;
+    padding: 0;
+}
+
 #week-forecast{
     text-align: center;
     border: 2px solid grey;
