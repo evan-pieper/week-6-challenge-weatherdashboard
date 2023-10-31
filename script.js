@@ -8,7 +8,7 @@ if(localStorage.getItem("cities") === null) { // if no cities in local storage
 }
 
 if(localStorage.getItem("activeCity") === null) { // if no active city in local storage
-    localStorage.setItem("activeCity", JSON.stringify("New York")); // set active city to New York
+    localStorage.setItem("activeCity", JSON.stringify("")); // set active city to empty string
 }
 
 async function getCoordinates(query) {
@@ -65,10 +65,15 @@ $(document).ready(function () { // when document is ready
         console.log("NY: " + NewYorkCoord); 
         console.log("London: " + LondonCoord);
     } */
+    
+    var activeCityInit = JSON.parse(localStorage.getItem("activeCity")); // get active city from local storage
+    if(activeCityInit === "") { // if active city is empty
+        console.log("active city empty, loading default cities");
+        loadDefaultCities(); // load default cities into local storage
+    }
 
     updateSearchHistory(); // update search history with cities from local storage when page loads
 
-    var activeCityInit = JSON.parse(localStorage.getItem("activeCity")); // get active city from local storage
     console.log("active city init: " + activeCityInit);
     var activeCityButton = $("#search-history").children().filter(function () { // get active city button
         if ($(this).text() === activeCityInit) {
@@ -76,8 +81,9 @@ $(document).ready(function () { // when document is ready
         }
     });
     console.log(activeCityButton);
-    updateActiveCity(activeCityButton[0]); // add active class to active city button (need to use [0] because filter returns an array)
 
+    updateActiveCity(activeCityButton[0]); // add active class to active city button (need to use [0] because filter returns an array)
+    
 
 
     async function loadDefaultCities() { // load default cities into local storage
